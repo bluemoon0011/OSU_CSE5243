@@ -26,3 +26,5 @@ Each data file is .txt where each row has two columns: sentence body and sentenc
 ### Task
 In this assignment, your task is to construct a feature vector for each sentence in the data set. For now, please use the frequency of words in the sentence body to construct a feature vector. For example, if there are totally M sentences and N words in the dataset, you will construct a
 MxN matrix D, where Dij means the count of word j in sentence i. Hint: You first need to segment/tokenize a sentence to get a collection of words in it. After that, it is up to you whether to do stemming (e.g.,"likes" and \liked" are stemmed to \like") or simply keep the original words.
+
+# Project x/Incoming
