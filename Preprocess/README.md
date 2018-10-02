@@ -1,31 +1,30 @@
-Instruction
-===========================
-This is instruction of how to run may code.
+# OSU CSE5243/Introduction of Data Ming
 ****
 Author: Xin Jin
 
-Email: jin.967@osu.edu
-
+Email: xin.jin0010@gmail.com
 ****
-# Files
-In the folder 'Preprocess', there are 3 files: dataset.txt, preprocess.py, TxtToCsv.py.
+# Description
+This is for the course "CSE5243/Introduction of Data Mining", the graduate level course of Computer Science and Engineering, The Ohio State Unversity.
 
-# Running Steps
+There are some projects, including data preprocessing (project 1) and other incoming projects.
 
-Step 1. Run: python TxtToCsv.py 
+# Project 1/Data Preprocessing
 
-I have collected all data from the 2 datasets and record them into a new file: dataset.tex. You need only run python TxtToCsv.py to convert .txt file to .csv file.
+## Description
 
-You will get file: dataset.csv
+This assignment is the first part of a longer-term project. The objective is to give you the experience of preprocessing real data and preparing it for future tasks such as automated classification.
 
-Step 2. Run: python preprocess.py
+### Data
+Sentiment Labelled Sentences Data Set, which contains sentences labelled with positive or negative sentiment. It can be downloaded here http://archive.ics.uci.edu/ml/datasets/Sentiment+Labelled+Sentences.
+Read their readme.txt file for detailed information. There are three sub-sets respectively from IMDB, Amazon and Yelp. Please merge them as asingle dataset, which should contain 3,000 sentences in total.
 
-This is the main file of this project. You will get the result.csv file.
+Each data file is .txt where each row has two columns: sentence body and sentence label. For example, one sample sentence is "Very little music or anything to speak of. 0", where the first column
+"Very little music or anything to speak of." is the content of a sentence while the second column "0" is its sentiment label (1 means positive; 0 means negative).
 
-In the result.csv file, the columns are feature vertor and the index is the original sentences.
 
-# Outcomes
+### Task
+In this assignment, your task is to construct a feature vector for each sentence in the data set. For now, please use the frequency of words in the sentence body to construct a feature vector. For example, if there are totally M sentences and N words in the dataset, you will construct a
+MxN matrix D, where Dij means the count of word j in sentence i. Hint: You first need to segment/tokenize a sentence to get a collection of words in it. After that, it is up to you whether to do stemming (e.g.,"likes" and \liked" are stemmed to \like") or simply keep the original words.
 
-1. After Step 1, you will get 'dataset.csv' file (in you current folder). It will be used in step 2.
-
-2. After Step 2, you will get 'result.csv' file ((in you current folder)). It  is the dataFrame format data. Its columns is the feature vector. Its indexes are the original sentences.
+# Project x/Incoming
