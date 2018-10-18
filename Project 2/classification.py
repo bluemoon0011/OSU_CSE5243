@@ -13,28 +13,31 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import types
+import re
 
 
-dataset = pd.read_csv('dataset.csv', sep='\t', names=['sentence', 'label', ])
+def stringTofloat(list):
+    for i in range(len(list)):
+        l=list[i]
+        l = re.sub("\D", "", l)
+        l=float(l)
+        list[i]=l
+    return list
 
-for i in range(len(dataset['label'])):
-    label=dataset['label'][i]
-    if label == 1:
-        pass
-    elif label == 0:
-        pass
-    elif label == '0"':
-        pass
-    elif label == '1"':
-        pass
-    else:
-        print label, i
+dataset = pd.read_csv('original_dataset.csv', sep='\t', names=['sentence', 'label', ])
+label = stringTofloat(dataset['label'])
+resultset = pd.read_csv('result_of_project1.csv', sep=',')# read the dataset, which is the resulf of Project 1
+feature=resultset.columns.values.tolist() # get the column of the dataFrame, which is the feature of the dataset
+feature=feature[1:]# the first element is 'unnamed: 0', which is not the element of the original fearure vector
+print feature
 
 
-
-print dataset['label']
+"*** Test Code ***"
 
 """
+print len(label)
+
 X, y = np.arange(10).reshape((5, 2)), range(5)
 
 print("X:{} \n", X)
