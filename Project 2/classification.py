@@ -17,6 +17,7 @@ import types
 import re
 import operator
 from itertools import islice
+from nltk.corpus import stopwords
 from operator import itemgetter
 
 def stringTofloat(list):
@@ -53,6 +54,14 @@ def chooseKeyFeature(tfScore,feature,N): # this is used to choose N features wit
         keyFeature.append(sorted_list[i][0])
     return keyFeature
 
+def getKeyFeature(originalDataset,trainingDataset,N):
+    feature=originalDataset.columns.values.tolist()
+    feature = feature[1:]
+    filteredFeature = [word for word in feature if word not in stopwords.words('english')]
+    keyFeature = chooseKeyFeature(computeTF_IDF(trainingDataset, filteredFeature), filteredFeature, N)
+    #filtered_keyFeature = [word for word in keyFeature if word not in stopwords.words('english')]
+    return keyFeature
+
 def Tup():
   return (3,"hello")
 
@@ -63,14 +72,20 @@ label = stringTofloat(dataset['label'])# the list of labels
 resultset = pd.read_csv('result_of_project1.csv', sep=',')# read the dataset, which is the resulf of Project 1
 #resultset.set_index(np.arange(0,3000))
 feature=resultset.columns.values.tolist() # get the column of the dataFrame, which is the feature of the dataset
+feature=feature[1:]
+filtered_feature= [word for word in feature if word not in stopwords.words('english')]
 #feature=feature[1:]# the first element is 'unnamed: 0', which is not the element of the original fearure vector
 trainingSet,testSet0,trainingLabel,testLabel0=splitDataset(resultset,label,0.4)# get 60% as test set/label, 40% as raw test set/label
 testSet,validationSet,testLabel,validationLabel=splitDataset(testSet0,testLabel0,0.5)# split the raw test set as test and validation set, and the test and validation set size is 20% and 20%
-keyFeature=chooseKeyFeature(computeTF_IDF(trainingSet,feature),feature,1000)
+#filtered_words = [word for word in feature if word not in stopwords.words('english')]
+#print len(filtered_words)
+keyFeature=getKeyFeature(resultset,trainingSet,1000)
 print keyFeature
+print len(keyFeature)
 
 "*** Test Code ***"
 '''
+filtered_words = [word for word in word_list if word not in stopwords.words('english')]
 tfScore=[11,2,6,4]
 feature=['so','you','are','ok']
 a=chooseKeyFeature(tfScore,feature,2)
