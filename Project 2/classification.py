@@ -15,7 +15,9 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import types
 import re
-
+import operator
+from itertools import islice
+from operator import itemgetter
 
 def stringTofloat(list):
     for i in range(len(list)):
@@ -25,16 +27,65 @@ def stringTofloat(list):
         list[i]=l
     return list
 
-dataset = pd.read_csv('original_dataset.csv', sep='\t', names=['sentence', 'label', ])
-label = stringTofloat(dataset['label'])
-resultset = pd.read_csv('result_of_project1.csv', sep=',')# read the dataset, which is the resulf of Project 1
-feature=resultset.columns.values.tolist() # get the column of the dataFrame, which is the feature of the dataset
-feature=feature[1:]# the first element is 'unnamed: 0', which is not the element of the original fearure vector
-print feature
+def splitDataset(attributeset,labelset,splitsize):
+    attributeset_train, attributeset_test, labelset_train, labelset_test = train_test_split(attributeset,labelset,test_size=splitsize)
+    return attributeset_train,attributeset_test,labelset_train,labelset_test
 
+def computeTF_IDF(trainingSet,feature):
+    tfScore=np.zeros(len(feature),dtype=float)
+    for i in range(len(feature)):
+        value=trainingSet[feature[i]]
+        tf=sum(value)
+        numContainFeature=np.count_nonzero(np.shape(value))
+        idf=np.log2(3000.0/numContainFeature)
+        tfScore[i]=tf*idf
+    return list(tfScore)
+
+def take(n, iterable):
+    "Return first n items of the iterable as a list"
+    return list(islice(iterable, n))
+
+def chooseKeyFeature(tfScore,feature,N): # this is used to choose N features with the larger tfScore
+    dictionary = dict(zip(feature, tfScore))
+    sorted_list= sorted(dictionary.items(), key=operator.itemgetter(1), reverse=True)
+    keyFeature=list()
+    for i in range(N):
+        keyFeature.append(sorted_list[i][0])
+    return keyFeature
+
+def Tup():
+  return (3,"hello")
+
+"*** Main function***"
+
+dataset = pd.read_csv('original_dataset.csv', sep='\t', names=['sentence', 'label', ]) # read the origianl text dataset which contains 3000 sentences and labels
+label = stringTofloat(dataset['label'])# the list of labels
+resultset = pd.read_csv('result_of_project1.csv', sep=',')# read the dataset, which is the resulf of Project 1
+#resultset.set_index(np.arange(0,3000))
+feature=resultset.columns.values.tolist() # get the column of the dataFrame, which is the feature of the dataset
+#feature=feature[1:]# the first element is 'unnamed: 0', which is not the element of the original fearure vector
+trainingSet,testSet0,trainingLabel,testLabel0=splitDataset(resultset,label,0.4)# get 60% as test set/label, 40% as raw test set/label
+testSet,validationSet,testLabel,validationLabel=splitDataset(testSet0,testLabel0,0.5)# split the raw test set as test and validation set, and the test and validation set size is 20% and 20%
+keyFeature=chooseKeyFeature(computeTF_IDF(trainingSet,feature),feature,1000)
+print keyFeature
 
 "*** Test Code ***"
-
+'''
+tfScore=[11,2,6,4]
+feature=['so','you','are','ok']
+a=chooseKeyFeature(tfScore,feature,2)
+print a
+tfScore=np.array(tfScore)
+feature=np.array(feature)
+a=np.vstack((feature,tfScore))
+a=list(a)
+sorted(a, key=itemgetter(1))
+N=2
+matrix = [ [4,5,6], [1,2,3], [7,0,9]]
+sorted(matrix, key=itemgetter(1))
+#print np.array(feature)
+#print chooseKeyFeature(tfScore,feature,N)
+'''
 """
 print len(label)
 

@@ -113,13 +113,20 @@ def dataToFrame(data, indexes, columns):
     file_data = pd.DataFrame(data, index=indexes, columns=columns)
     return file_data
 
+def dataToFrame1(data,cloumns):# don't set the sentenses as the indexes
+    data = list(data)
+    columns = list(cloumns)
+    file_data = pd.DataFrame(data, columns=columns)
+    return file_data
+
 # Main function
 if __name__ == "__main__":
     dataset = pd.read_csv('dataset.csv', sep='\t', names=['sentence', 'label', ]) # read the dataset.csv file and give label for its first and second column
     feature = get_feature(dataset['sentence']) # get feature vector
     feature_matirx = build_matrix(dataset['sentence'][1:], feature, get_FeatureVector(feature, dataset['sentence'][0])) #get value matrix for sentences
-    df_amazon = dataToFrame(feature_matirx, dataset['sentence'], feature) # convert the value matrix into dataFrame format dateset
-    df_amazon.to_csv('result.csv') # write the dataset into result.csv file for next project
-
+    #df_amazon = dataToFrame(feature_matirx, dataset['sentence'], feature) # convert the value matrix into dataFrame format dateset
+    #df_amazon.to_csv('result.csv') # write the dataset into result.csv file for next project
+    df=dataToFrame1(feature_matirx, feature)
+    df.to_csv('result_of_project1.csv')
 
 
