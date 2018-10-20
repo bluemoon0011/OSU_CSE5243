@@ -7,33 +7,29 @@
 @software: pycharm
 @file: KNN.py
 @time: 10/19/18 7:48 PM
-@desc: This is the function to obtain the classification result with K Nearest Neighbor(KNN)
+@desc: This is the function to obtain the classification result by K Nearest Neighbor(KNN) method
 '''
 
 import numpy as np
-from sklearn import datasets
 from collections import Counter
 
 "*** Determining the neighbors ***"
 def distance(instance1, instance2): # Euclidean distance
-    # just in case, if the instances are lists or tuples:
     instance1 = np.array(instance1)
     instance2 = np.array(instance2)
     return np.linalg.norm(instance1 - instance2)
 
 def get_neighbors(training_set, labels, test_instance, k, distance=distance):
-    """
-    get_neighors calculates a list of the k nearest neighbors
-    of an instance 'test_instance'.
-    The list neighbors contains 3-tuples with
-    (index, dist, label)
-    where
-    index    is the index from the training_set,
-    dist     is the distance between the test_instance and the
-             instance training_set[index]
-    distance is a reference to a function used to calculate the
-             distances
-    """
+    '''
+    desc:
+        get_neighors calculates a list of the k nearest neighbors of of an instance 'test_instance'.
+    :param training_set: this should be matrix of the training set
+    :param labels: the list of labels of the training set
+    :param test_instance: the test instance
+    :param k: the key parameter of k
+    :param distance: the method to calculate the distance of obejects from training set and test set
+    :return: tuple: (index, dist, label)
+    '''
     distances = []
     for index in range(len(training_set)):
         dist = distance(test_instance, training_set[index])
@@ -44,6 +40,12 @@ def get_neighbors(training_set, labels, test_instance, k, distance=distance):
 
 "*** Voting to get a Single Result ***"
 def vote(neighbors): # vote the label for one cluster
+    '''0.686666666667
+    desc:
+        try to vote the label of the neighbors which is the label of the test instance
+    :param neighbors:
+    :return:
+    '''
     class_counter = Counter()
     for neighbor in neighbors:
         class_counter[neighbor[2]] += 1
@@ -94,14 +96,14 @@ def vote_distance_weights(neighbors, all_results=True):
     else:
         return winner, votes4winner / sum(votes)
 
-def ClassifyTestset(trainingset, testset,trainingLabel, testLabel):
+def ClassifyTestset(trainingset, testset,trainingLabel, testLabel,K):
     numTestSample=len(testLabel)
     ClassifiedLabels=[]
     #testSetIndex=testLabel.index.tolist()
     for i in range(len(testLabel)):
         a=testset[i]
-        neighbors = get_neighbors(trainingset, trainingLabel, testset[i], 6, distance=distance)
-        classifiedlabel, voteresult=vote_distance_weights(neighbors,all_results=False)
+        neighbors = get_neighbors(trainingset, trainingLabel, testset[i], K, distance=distance)
+        classifiedlabel, voteresult=vote_harmonic_weights(neighbors,all_results=False)
         ClassifiedLabels.append(classifiedlabel)
     return ClassifiedLabels
 

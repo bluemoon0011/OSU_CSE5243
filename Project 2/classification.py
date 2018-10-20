@@ -84,7 +84,7 @@ keyFeature=getKeyFeature(resultset,trainingSet,1000)
 
 trainingSet_pruned=trainingSet[keyFeature]
 testSet_pruned=testSet[keyFeature]
-labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix())
+labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),6)
 rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
 print rate
 
