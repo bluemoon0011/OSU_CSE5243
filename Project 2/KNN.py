@@ -7,51 +7,12 @@
 @software: pycharm
 @file: KNN.py
 @time: 10/19/18 7:48 PM
-@desc:
+@desc: This is the function to obtain the classification result with K Nearest Neighbor(KNN)
 '''
 
 import numpy as np
 from sklearn import datasets
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from collections import Counter
-
-"*** Import the data set ***"
-iris = datasets.load_iris()
-iris_data = iris.data
-iris_labels = iris.target
-#print(iris_data[0], iris_data[79], iris_data[100])
-#print(iris_labels[0], iris_labels[79], iris_labels[100])
-
-"*** Split data set ***"
-np.random.seed(42)
-indices = np.random.permutation(len(iris_data))
-n_training_samples = 12
-learnset_data = iris_data[indices[:-n_training_samples]]
-learnset_labels = iris_labels[indices[:-n_training_samples]]
-testset_data = iris_data[indices[-n_training_samples:]]
-testset_labels = iris_labels[indices[-n_training_samples:]]
-#print(learnset_data[:4], learnset_labels[:4])
-#print(testset_data[:4], testset_labels[:4])
-
-"*** Plot Data Set ***"
-'''
-colours = ("r", "b")
-X = []
-for iclass in range(3):
-    X.append([[], [], []])
-    for i in range(len(learnset_data)):
-        if learnset_labels[i] == iclass:
-            X[iclass][0].append(learnset_data[i][0])
-            X[iclass][1].append(learnset_data[i][1])
-            X[iclass][2].append(sum(learnset_data[i][2:]))
-colours = ("r", "g", "y")
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-for iclass in range(3):
-       ax.scatter(X[iclass][0], X[iclass][1], X[iclass][2], c=colours[iclass])
-plt.show()
-'''
 
 "*** Determining the neighbors ***"
 def distance(instance1, instance2): # Euclidean distance
@@ -80,11 +41,6 @@ def get_neighbors(training_set, labels, test_instance, k, distance=distance):
     distances.sort(key=lambda x: x[1])
     neighbors = distances[:k]
     return neighbors
-"""
-for i in range(5):
-    neighbors = get_neighbors(learnset_data,learnset_labels,testset_data[i],3,distance=distance)
-    print(i,testset_data[i],testset_labels[i],neighbors)
-"""
 
 "*** Voting to get a Single Result ***"
 def vote(neighbors): # vote the label for one cluster
@@ -138,7 +94,86 @@ def vote_distance_weights(neighbors, all_results=True):
     else:
         return winner, votes4winner / sum(votes)
 
+def ClassifyTestset(trainingset, testset,trainingLabel, testLabel):
+    numTestSample=len(testLabel)
+    ClassifiedLabels=[]
+    #testSetIndex=testLabel.index.tolist()
+    for i in range(len(testLabel)):
+        a=testset[i]
+        neighbors = get_neighbors(trainingset, trainingLabel, testset[i], 6, distance=distance)
+        classifiedlabel, voteresult=vote_distance_weights(neighbors,all_results=False)
+        ClassifiedLabels.append(classifiedlabel)
+    return ClassifiedLabels
+
+def ComputeAccuracy(ClassifiedLabels,testLabel):
+    numWrong=0.0
+    if len(testLabel)!=len(ClassifiedLabels):
+        return 0.0
+    else:
+        for i in range(len(testLabel)):
+            if testLabel[i] != ClassifiedLabels[i]:
+                numWrong+=1
+        accuracyRate=1.0-numWrong/float(len(testLabel))
+    return accuracyRate
+
+
+"*** Test code ***"
 """
+iris = datasets.load_iris()
+iris_data = iris.data
+iris_labels = iris.target
+
+np.random.seed(42)
+indices = np.random.permutation(len(iris_data))
+n_training_samples = 12
+learnset_data = iris_data[indices[:-n_training_samples]]
+learnset_labels = iris_labels[indices[:-n_training_samples]]
+testset_data = iris_data[indices[-n_training_samples:]]
+testset_labels = iris_labels[indices[-n_training_samples:]]
+labels=ClassifyTestset(learnset_data,testset_data,learnset_labels,testset_labels)
+rate=ComputeAccuracy(labels,testset_labels)
+print len(learnset_labels)
+print len(testset_labels)
+print labels
+print testset_labels
+print distance(labels,testset_labels)
+print rate
+
+"""
+"""
+"*** Import the data set ***"
+iris = datasets.load_iris()
+iris_data = iris.data
+iris_labels = iris.target
+
+
+"*** Split data set ***"
+np.random.seed(42)
+indices = np.random.permutation(len(iris_data))
+n_training_samples = 12
+learnset_data = iris_data[indices[:-n_training_samples]]
+learnset_labels = iris_labels[indices[:-n_training_samples]]
+testset_data = iris_data[indices[-n_training_samples:]]
+testset_labels = iris_labels[indices[-n_training_samples:]]
+
+"*** Plot Data Set ***"
+colours = ("r", "b")
+X = []
+for iclass in range(3):
+    X.append([[], [], []])
+    for i in range(len(learnset_data)):
+        if learnset_labels[i] == iclass:
+            X[iclass][0].append(learnset_data[i][0])
+            X[iclass][1].append(learnset_data[i][1])
+            X[iclass][2].append(sum(learnset_data[i][2:]))
+colours = ("r", "g", "y")
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+for iclass in range(3):
+       ax.scatter(X[iclass][0], X[iclass][1], X[iclass][2], c=colours[iclass])
+plt.show()
+
+
 for i in range(n_training_samples):
     neighbors = get_neighbors(learnset_data,learnset_labels,testset_data[i],3,distance=distance)
     print("index: ", i,", result of vote: ", vote(neighbors),", label: ", testset_labels[i], ", data: ", testset_data[i])
@@ -153,19 +188,11 @@ for i in range(n_training_samples):
           ", vote_prob: ", vote_prob(neighbors),
           ", label: ", testset_labels[i],
           ", data: ", testset_data[i])
-"""
 
-for i in range(n_training_samples):
-    neighbors = get_neighbors(learnset_data,
-                              learnset_labels,
-                              testset_data[i],
-                              6,
-                              distance=distance)
-    print("index: ", i,
-          ", result of vote: ",
-          vote_harmonic_weights(neighbors,
-                                all_results=True))
-
+for i in range(5):
+    neighbors = get_neighbors(learnset_data,learnset_labels,testset_data[i],3,distance=distance)
+    print(i,testset_data[i],testset_labels[i],neighbors)
+    
 for i in range(n_training_samples):
     neighbors = get_neighbors(learnset_data,
                               learnset_labels,
@@ -175,3 +202,4 @@ for i in range(n_training_samples):
     print("index: ", i,
           ", result of vote: ", vote_distance_weights(neighbors,
                                                       all_results=True))
+"""

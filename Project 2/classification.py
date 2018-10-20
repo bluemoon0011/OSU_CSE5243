@@ -19,6 +19,7 @@ import operator
 from itertools import islice
 from nltk.corpus import stopwords
 from operator import itemgetter
+import KNN as knn
 
 def stringTofloat(list):
     for i in range(len(list)):
@@ -81,9 +82,18 @@ testSet,validationSet,testLabel,validationLabel=splitDataset(testSet0,testLabel0
 #print len(filtered_words)
 keyFeature=getKeyFeature(resultset,trainingSet,1000)
 
+trainingSet_pruned=trainingSet[keyFeature]
+testSet_pruned=testSet[keyFeature]
+labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix())
+rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
+print rate
 
 "*** Test Code ***"
 '''
+np_testset = testSet_pruned.as_matrix()
+np_trainingset = trainingSet_pruned.as_matrix()
+print np_testset[0]
+
 filtered_words = [word for word in word_list if word not in stopwords.words('english')]
 tfScore=[11,2,6,4]
 feature=['so','you','are','ok']
