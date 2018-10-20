@@ -80,8 +80,7 @@ testSet,validationSet,testLabel,validationLabel=splitDataset(testSet0,testLabel0
 #filtered_words = [word for word in feature if word not in stopwords.words('english')]
 #print len(filtered_words)
 keyFeature=getKeyFeature(resultset,trainingSet,1000)
-print keyFeature
-print len(keyFeature)
+
 
 "*** Test Code ***"
 '''
