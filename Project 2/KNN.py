@@ -103,7 +103,8 @@ def ClassifyTestset(trainingset, testset,trainingLabel, testLabel,K):
     for i in range(len(testLabel)):
         a=testset[i]
         neighbors = get_neighbors(trainingset, trainingLabel, testset[i], K, distance=distance)
-        classifiedlabel, voteresult=vote_harmonic_weights(neighbors,all_results=False)
+        classifiedlabel, voteresult=vote_distance_weights(neighbors,all_results=False)
+        #classifiedlabel, voteresult = vote_prob(neighbors)
         ClassifiedLabels.append(classifiedlabel)
     return ClassifiedLabels
 

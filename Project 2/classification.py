@@ -71,23 +71,27 @@ def Tup():
 dataset = pd.read_csv('original_dataset.csv', sep='\t', names=['sentence', 'label', ]) # read the origianl text dataset which contains 3000 sentences and labels
 label = stringTofloat(dataset['label'])# the list of labels
 resultset = pd.read_csv('result_of_project1.csv', sep=',')# read the dataset, which is the resulf of Project 1
-#resultset.set_index(np.arange(0,3000))
 feature=resultset.columns.values.tolist() # get the column of the dataFrame, which is the feature of the dataset
-feature=feature[1:]
-filtered_feature= [word for word in feature if word not in stopwords.words('english')]
-#feature=feature[1:]# the first element is 'unnamed: 0', which is not the element of the original fearure vector
+feature=feature[1:] # exclude the first element of the feature vector, which is the name of the index
 trainingSet,testSet0,trainingLabel,testLabel0=splitDataset(resultset,label,0.4)# get 60% as test set/label, 40% as raw test set/label
 testSet,validationSet,testLabel,validationLabel=splitDataset(testSet0,testLabel0,0.5)# split the raw test set as test and validation set, and the test and validation set size is 20% and 20%
-#filtered_words = [word for word in feature if word not in stopwords.words('english')]
-#print len(filtered_words)
 keyFeature=getKeyFeature(resultset,trainingSet,1000)
-
 trainingSet_pruned=trainingSet[keyFeature]
 testSet_pruned=testSet[keyFeature]
-labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),6)
+trainingSet_unpruned=trainingSet[feature]
+testSet_unpruned=testSet[feature]
+
+
+"*** Classify by KNN ***"
+#test the accuracy rate of the pruned(prune the stop word) feature
+labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),8)
 rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
 print rate
 
+#test the accuracy rate of the unpruned feature
+labels1=knn.ClassifyTestset(trainingSet_unpruned.as_matrix(),testSet_unpruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),8)
+rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
+print rate
 "*** Test Code ***"
 '''
 np_testset = testSet_pruned.as_matrix()
@@ -111,6 +115,9 @@ sorted(matrix, key=itemgetter(1))
 #print chooseKeyFeature(tfScore,feature,N)
 '''
 """
+filtered_words = [word for word in feature if word not in stopwords.words('english')]
+filtered_feature= [word for word in feature if word not in stopwords.words('english')] # 
+
 print len(label)
 
 X, y = np.arange(10).reshape((5, 2)), range(5)
