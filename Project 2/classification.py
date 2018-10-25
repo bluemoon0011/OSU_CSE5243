@@ -12,6 +12,7 @@
 
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 import pandas as pd
 import types
 import re
@@ -20,6 +21,8 @@ from itertools import islice
 from nltk.corpus import stopwords
 from operator import itemgetter
 import KNN as knn
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import NuSVC
 
 def stringTofloat(list):
     for i in range(len(list)):
@@ -63,8 +66,57 @@ def getKeyFeature(originalDataset,trainingDataset,N):
     #filtered_keyFeature = [word for word in keyFeature if word not in stopwords.words('english')]
     return keyFeature
 
-def Tup():
-  return (3,"hello")
+def knnClassification():
+    # test the accuracy rate of the pruned(prune the stop word) feature
+    labels1 = knn.ClassifyTestset(trainingSet_pruned.values, testSet_pruned.values, trainingLabel.values,testLabel.values, 8)
+    accurracy1 = knn.ComputeAccuracy(labels1, testLabel.values)
+
+    # test the accuracy rate of the unpruned feature
+    labels2 = knn.ClassifyTestset(trainingSet_unpruned.values, testSet_unpruned.values, trainingLabel.values,testLabel.values, 8)
+    accurracy2 = knn.ComputeAccuracy(labels2, testLabel.values)
+    return accurracy1,accurracy2
+
+def naiveBayesClassification():
+
+    NaiveBayes1 = GaussianNB()
+    NaiveBayes1.fit(trainingSet_pruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels1 = NaiveBayes1.predict(testSet_pruned.values.astype(int))
+    accurateprediction1 = (ClassifiedLabels1 == testLabel.values.astype(int)).sum()
+    accurracy1 = accurateprediction1 / len(ClassifiedLabels1)
+    # print("Accuracy : %f" % (ClassifiedLabels == testLabel.values.astype(int)).sum()/(len(ClassifiedLabels)))
+
+    NaiveBayes2 = GaussianNB()
+    NaiveBayes2.fit(trainingSet_unpruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels2 = NaiveBayes2.predict(testSet_unpruned.values.astype(int))
+    accurateprediction2 = (ClassifiedLabels2 == testLabel.values.astype(int)).sum()
+    accurracy2 = accurateprediction2 / len(ClassifiedLabels2)
+    return accurracy1,accurracy2
+
+def logisticRegressionClassification():
+    classifier1 = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(trainingSet_pruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels1 = classifier1.predict(testSet_pruned.values.astype(int))
+    accurateprediction1 = (ClassifiedLabels1== testLabel.values.astype(int)).sum()
+    accurracy1 = accurateprediction1 / len(ClassifiedLabels1)
+
+    classifier2 = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(trainingSet_unpruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels2 = classifier2.predict(testSet_unpruned.values.astype(int))
+    accurateprediction2 = (ClassifiedLabels2 == testLabel.values.astype(int)).sum()
+    accurracy2 = accurateprediction2 / len(ClassifiedLabels2)
+    return accurracy1,accurracy2
+
+def supportVectorMachineClassification():
+    classifier1 = NuSVC(gamma='auto')
+    classifier1.fit(trainingSet_pruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels1 = classifier1.predict(testSet_pruned.values.astype(int))
+    accurateprediction1 = (ClassifiedLabels1 == testLabel.values.astype(int)).sum()
+    accurracy1 = accurateprediction1 / len(ClassifiedLabels1)
+
+    classifier2 = NuSVC(gamma='auto')
+    classifier2.fit(trainingSet_unpruned.values.astype(int), trainingLabel.values.astype(int))
+    ClassifiedLabels2 = classifier2.predict(testSet_unpruned.values.astype(int))
+    accurateprediction2 = (ClassifiedLabels2 == testLabel.values.astype(int)).sum()
+    accurracy2 = accurateprediction2 / len(ClassifiedLabels2)
+    return accurracy1,accurracy2
 
 "*** Main function***"
 
@@ -81,19 +133,29 @@ testSet_pruned=testSet[keyFeature]
 trainingSet_unpruned=trainingSet[feature]
 testSet_unpruned=testSet[feature]
 
+"*** Classification by KNN ***"
+accurracy1,accurracy2=knnClassification()
+print(accurracy1,accurracy2)
 
-"*** Classify by KNN ***"
-#test the accuracy rate of the pruned(prune the stop word) feature
-labels=knn.ClassifyTestset(trainingSet_pruned.as_matrix(),testSet_pruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),8)
-rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
-print rate
+"*** Classification by Naive Bayes***"
+accurracy1,accurracy2=naiveBayesClassification()
+print(accurracy1,accurracy2)
 
-#test the accuracy rate of the unpruned feature
-labels1=knn.ClassifyTestset(trainingSet_unpruned.as_matrix(),testSet_unpruned.as_matrix(),trainingLabel.as_matrix(),testLabel.as_matrix(),8)
-rate=knn.ComputeAccuracy(labels,testLabel.as_matrix())
-print rate
+"*** Classification by logistic regression ***"
+accurracy1,accurracy2=logisticRegressionClassification()
+print(accurracy1,accurracy2)
+
+"*** Classification by support vector machine ***"
+accurracy1,accurracy2=supportVectorMachineClassification()
+print(accurracy1,accurracy2)
+
 "*** Test Code ***"
 '''
+x=np.array(trainingSet_pruned.values)
+y=np.array(trainingLabel.values)
+
+print(trainingSet_pruned.values.shape)
+print(trainingLabel.values.shape)
 np_testset = testSet_pruned.as_matrix()
 np_trainingset = trainingSet_pruned.as_matrix()
 print np_testset[0]
