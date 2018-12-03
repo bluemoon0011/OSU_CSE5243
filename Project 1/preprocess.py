@@ -91,7 +91,7 @@ def build_matrix(dataset,feature_all,matrix):
     @desc: build the feature value matrix by merging feature value vector
     :param dataset: sentences dataset
     :param feature_all: a list of feature words
-    :param matrix: the feature_value matirx
+    :param matrix: the feature_value matirx for the first sentence in the dataset
     :return: the merge feature value matrix
     '''
     for line in dataset:
@@ -121,7 +121,7 @@ def dataToFrame1(data,cloumns):# don't set the sentenses as the indexes
 
 # Main function
 if __name__ == "__main__":
-    dataset = pd.read_csv('dataset.csv', sep='\t', names=['sentence', 'label', ]) # read the dataset.csv file and give label for its first and second column
+    dataset = pd.read_csv('original_dataset.csv', sep='\t', names=['sentence', 'label', ]) # read the dataset.csv file and give label for its first and second column
     feature = get_feature(dataset['sentence']) # get feature vector
     feature_matirx = build_matrix(dataset['sentence'][1:], feature, get_FeatureVector(feature, dataset['sentence'][0])) #get value matrix for sentences
     #df_amazon = dataToFrame(feature_matirx, dataset['sentence'], feature) # convert the value matrix into dataFrame format dateset
