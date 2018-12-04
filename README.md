@@ -35,7 +35,7 @@ You can see the details in the folder Porject 2
 
 # Project 3/Locality Sensitive Hashing
 ## Description
-The objective in this problem is to evaluate the ecacy and eciency of min-wise hashing for document similarity. You will use the Sentiment Labelled Sentence Data Set (i.e., what you used in the previous two programming as-signments). I begin with the feature vector you created in Assignment1 (feel free to adapt or develop alternatives if you wish to start from scratch).
+The objective in this problem is to evaluate the effcacy and effciency of min-wise hashing for document similarity. You will use the Sentiment Labelled Sentence Data Set (i.e., what you used in the previous two programming as-signments). I begin with the feature vector you created in Assignment1 (feel free to adapt or develop alternatives if you wish to start from scratch).
 For example some of you used n-grams or 3-word shingles in your feature vector(results on these may yield better results as we discussed in the lecture).
 
 ## Dataset
