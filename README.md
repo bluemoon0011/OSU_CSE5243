@@ -2,7 +2,7 @@ OSU CSE5243/Introduction of Data Ming
 ===========================
 |Author|Xin Jin|
 |---|---
-|E-mail|xin.jin0010@gmail.com
+|E-mail|xin.jin0011@gmail.com
 
 
 ****
